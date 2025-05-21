@@ -97,6 +97,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application/admin/car_model_listpage.dart';
 import 'package:flutter_application/admin/dashboard.dart';
+import 'package:flutter_application/register.dart';
 import 'firebase_options.dart';  
 import 'theme/app_theme.dart';
 // FlutterFire CLI se generate hua
@@ -118,7 +119,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Car Model Manager',
       debugShowCheckedModeBanner: false,
-      home:  AdminDashboard(),  // Aapka existing AddCarModelPage
+      home:  UserRegisterScreen(),  // Aapka existing AddCarModelPage
     );
   }
 }

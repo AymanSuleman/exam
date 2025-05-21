@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_application/admin/add_car_model.dart';
 import 'package:flutter_application/admin/car_model_detail.dart';
+import 'package:flutter_application/admin/report_page.dart';
 import 'package:flutter_application/theme/app_theme.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:intl/intl.dart';
@@ -93,6 +94,15 @@ class _AdminDashboardState extends State<AdminDashboard> {
               color: AppTheme.textPrimary,
             ),
             onPressed: _exportToPdf,
+          ),
+          IconButton(
+            icon: Icon(Icons.bar_chart, color: AppTheme.textPrimary),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => ReportsPage()),
+              );
+            },
           ),
         ],
       ),

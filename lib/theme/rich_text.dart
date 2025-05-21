@@ -1,83 +1,76 @@
-// lib/widgets/rich_text_editor.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
-import 'package:flutter/services.dart';
-import 'app_theme.dart';
+import 'dart:convert';
 
 class RichTextEditor extends StatefulWidget {
-  final quill.QuillController controller;
-  final String label;
-  final _controller = quill.QuillController.basic();
-final _focusNode = FocusNode();
+  final String? initialContent;
+  final bool readOnly;
+  final Function(String)? onContentChanged;
 
-   RichTextEditor({
-    super.key,
-    required this.controller,
-    required this.label,
-  });
+  const RichTextEditor({
+    Key? key,
+    this.initialContent,
+    this.readOnly = false,
+    this.onContentChanged,
+  }) : super(key: key);
 
   @override
-  State<RichTextEditor> createState() => _RichTextEditorState();
+  _RichTextEditorState createState() => _RichTextEditorState();
 }
 
 class _RichTextEditorState extends State<RichTextEditor> {
-  late final FocusNode _focusNode;
+  late quill.QuillController _controller;
 
   @override
   void initState() {
     super.initState();
-    _focusNode = FocusNode();
-  }
 
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
+    if (widget.initialContent != null && widget.initialContent!.isNotEmpty) {
+      try {
+        final doc = quill.Document.fromJson(jsonDecode(widget.initialContent!));
+        _controller = quill.QuillController(
+            document: doc, selection: const TextSelection.collapsed(offset: 0));
+      } catch (e) {
+        _controller = quill.QuillController.basic();
+      }
+    } else {
+      _controller = quill.QuillController.basic();
+    }
+
+    if (!widget.readOnly && widget.onContentChanged != null) {
+      _controller.addListener(() {
+        final json = jsonEncode(_controller.document.toDelta().toJson());
+        widget.onContentChanged!(json);
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(widget.label,
-            style: Theme.of(context).textTheme.titleMedium),
+        if (!widget.readOnly)
+          quill.QuillToolbar.basic(controller: _controller),
         const SizedBox(height: 8),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border.all(color: Colors.grey.shade300),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            children: [
-              quill.QuillToolbar.simple(
-                configurations: quill.QuillSimpleToolbarConfigurations(
-                  controller: widget.controller,
-                  sharedConfigurations: const quill.QuillSharedConfigurations(),
-                  multiRowsDisplay: false,
-                ),
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 200,
-                child: quill.QuillEditor.basic(
-                  configurations: quill.QuillEditorConfigurations(
-                    controller: widget.controller,
-                    sharedConfigurations: const quill.QuillSharedConfigurations(),
-                    enableInteractiveSelection: true,
-                    scrollable: true,
-                    autoFocus: false,
-                    expands: false,
-                    padding: EdgeInsets.zero,
-                  ),
-                ),
-              ),
-            ],
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey.shade300),
+                borderRadius: BorderRadius.circular(8)),
+            child: quill.QuillEditor(
+              controller: _controller,
+              readOnly: widget.readOnly,
+              scrollController: ScrollController(),
+              scrollable: true,
+              focusNode: FocusNode(),
+              autoFocus: false,
+              expands: true,
+              padding: EdgeInsets.zero,
+              placeholder: widget.readOnly ? null : 'Enter rich text here',
+            ),
           ),
         ),
-        const SizedBox(height: 16),
       ],
     );
   }

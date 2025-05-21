@@ -1,54 +1,61 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application/admin/dashboard.dart';
-import 'package:flutter_application/register.dart';
+import 'package:flutter_application/login.dart';
 import 'package:flutter_application/theme/app_theme.dart';
-import 'package:flutter_application/userhome.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class UserRegisterScreen extends StatefulWidget {
+  const UserRegisterScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<UserRegisterScreen> createState() => _UserRegisterScreenState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _UserRegisterScreenState extends State<UserRegisterScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-  bool _isLoading = false;
-  bool _savePassword = false;
 
-  Future<void> login() async {
+  bool _isLoading = false;
+  bool _obscurePassword = true;
+
+  Future<void> _registerUser() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
 
     try {
-      final authResult = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
+      UserCredential userCred = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+              email: _emailController.text.trim(),
+              password: _passwordController.text);
 
-      final userDoc = await FirebaseFirestore.instance
+      await FirebaseFirestore.instance
           .collection('users')
-          .doc(authResult.user!.uid)
-          .get();
+          .doc(userCred.user!.uid)
+          .set({
+        'uid': userCred.user!.uid,
+        'name': _nameController.text.trim(),
+        'email': _emailController.text.trim(),
+        'createdAt': FieldValue.serverTimestamp(),
+        'role': 'user',
+      });
 
-      final role = userDoc.data()?['role'] ?? 'user';
-      if (role == 'admin') {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => AdminDashboard()));
-      } else {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => CarModelDashboard()));
-      }
-    } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message ?? 'Login failed')),
+        const SnackBar(content: Text('Registration successful!')),
       );
+
+      Navigator.pop(context); // Go back to login
+    } on FirebaseAuthException catch (e) {
+      String message = 'Registration failed';
+      if (e.code == 'email-already-in-use') {
+        message = 'Email already in use';
+      } else if (e.code == 'weak-password') {
+        message = 'Password too weak';
+      }
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
     } finally {
       setState(() => _isLoading = false);
     }
@@ -66,16 +73,14 @@ class _LoginPageState extends State<LoginPage> {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           stops: const [0.0, 0.5, 1.0],
-          // For luxury effect, add some subtle stops & color opacity changes
         ),
       ),
     );
   }
 
-  Widget _buildLoginCard(BuildContext context) {
+  Widget _buildRegisterCard(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        // Limit max width on large screens for better UI
         double cardWidth = constraints.maxWidth < 600 ? constraints.maxWidth * 0.9 : 450;
 
         return Center(
@@ -94,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          "Login Account",
+                          "Create Account",
                           style: GoogleFonts.poppins(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -103,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          "Access your account with your credentials.",
+                          "Fill the form to register a new account.",
                           style: GoogleFonts.poppins(
                             fontSize: 14,
                             color: AppTheme.textSecondary,
@@ -111,51 +116,40 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 24),
                         TextFormField(
+                          controller: _nameController,
+                          decoration: const InputDecoration(
+                            labelText: 'Full Name',
+                            prefixIcon: Icon(Icons.person),
+                          ),
+                          validator: (val) =>
+                              val == null || val.trim().isEmpty ? 'Please enter your name' : null,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
                           controller: _emailController,
                           decoration: const InputDecoration(
                             labelText: 'Email Address',
                             prefixIcon: Icon(Icons.email),
                           ),
                           validator: (val) =>
-                              val == null || val.isEmpty ? 'Enter email' : null,
+                              val == null || !val.contains('@') ? 'Enter a valid email' : null,
                         ),
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _passwordController,
-                          obscureText: true,
-                          decoration: const InputDecoration(
+                          obscureText: _obscurePassword,
+                          decoration: InputDecoration(
                             labelText: 'Password',
-                            prefixIcon: Icon(Icons.lock),
+                            prefixIcon: const Icon(Icons.lock),
+                            suffixIcon: IconButton(
+                              icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+                              onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                            ),
                           ),
                           validator: (val) =>
-                              val == null || val.isEmpty ? 'Enter password' : null,
+                              val != null && val.length < 6 ? 'Password must be at least 6 characters' : null,
                         ),
-                        const SizedBox(height: 16),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Checkbox(
-                                  value: _savePassword,
-                                  onChanged: (val) {
-                                    setState(() {
-                                      _savePassword = val ?? false;
-                                    });
-                                  },
-                                ),
-                                const Text("Save Password"),
-                              ],
-                            ),
-                            // TextButton(
-                            //   onPressed: () {
-                            //     // TODO: handle forgot password
-                            //   },
-                            //   child: const Text("Forgot Password?"),
-                            // )
-                          ],
-                        ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 24),
                         _isLoading
                             ? const Center(child: CircularProgressIndicator())
                             : SizedBox(
@@ -168,9 +162,9 @@ class _LoginPageState extends State<LoginPage> {
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                   ),
-                                  onPressed: login,
+                                  onPressed: _registerUser,
                                   child: const Text(
-                                    "Login Account",
+                                    "Register",
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
@@ -179,15 +173,19 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ),
                         const SizedBox(height: 16),
-                        TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => const UserRegisterScreen()),
-                            );
-                          },
-                          child: const Text("Create New Account"),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text("Already have an account? "),
+                            TextButton(
+                              onPressed: () => Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const LoginPage(),
+                                  )),
+                              child: const Text("Login"),
+                            ),
+                          ],
                         )
                       ],
                     ),
@@ -207,7 +205,7 @@ class _LoginPageState extends State<LoginPage> {
       body: Stack(
         children: [
           _buildBackground(),
-          _buildLoginCard(context),
+          _buildRegisterCard(context),
         ],
       ),
     );
