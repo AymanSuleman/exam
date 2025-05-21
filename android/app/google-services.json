@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "810776624742",
+    "project_id": "carmodel-3dc15",
+    "storage_bucket": "carmodel-3dc15.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:810776624742:android:e708a4b5c1eb9e4a2c37a7",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoHKWWdksMgxR4upCpr-9MnNcox9hCjHE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
