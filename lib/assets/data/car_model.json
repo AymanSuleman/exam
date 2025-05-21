@@ -1,0 +1,72 @@
+{
+  "carModels": [
+    {
+      "brand": "Audi",
+      "class": "A-Class",
+      "modelName": "Audi A3",
+      "modelCode": "AUDI123",
+      "description": "<p>The Audi A3 is a compact executive car offering luxury and performance.</p>",
+      "features": "<ul><li>Leather seats</li><li>Sunroof</li><li>Bluetooth connectivity</li></ul>",
+      "price": 35000.00,
+      "dateOfManufacture": "2021-01-01T00:00:00Z",
+      "active": true,
+      "sortOrder": 1,
+      "modelImages": [
+        "https://example.com/car_images/audi_a3_1.jpg",
+        "https://example.com/car_images/audi_a3_2.jpg"
+      ],
+      "thumbnail": "https://example.com/car_images/audi_a3_1.jpg"
+    },
+    {
+      "brand": "Jaguar",
+      "class": "B-Class",
+      "modelName": "Jaguar XE",
+      "modelCode": "JAGX456",
+      "description": "<p>Jaguar XE is a compact executive car combining style and power.</p>",
+      "features": "<ul><li>Advanced safety features</li><li>Sport mode</li><li>Premium sound system</li></ul>",
+      "price": 45000.00,
+      "dateOfManufacture": "2022-03-15T00:00:00Z",
+      "active": true,
+      "sortOrder": 2,
+      "modelImages": [
+        "https://example.com/car_images/jaguar_xe_1.jpg",
+        "https://example.com/car_images/jaguar_xe_2.jpg"
+      ],
+      "thumbnail": "https://example.com/car_images/jaguar_xe_1.jpg"
+    },
+    {
+      "brand": "Land Rover",
+      "class": "C-Class",
+      "modelName": "Land Rover Discovery",
+      "modelCode": "LRD789",
+      "description": "<p>Land Rover Discovery is an all-terrain luxury SUV with superior off-road capabilities.</p>",
+      "features": "<ul><li>4x4 drivetrain</li><li>Terrain response system</li><li>Luxury interiors</li></ul>",
+      "price": 60000.00,
+      "dateOfManufacture": "2020-11-20T00:00:00Z",
+      "active": true,
+      "sortOrder": 3,
+      "modelImages": [
+        "https://example.com/car_images/landrover_discovery_1.jpg",
+        "https://example.com/car_images/landrover_discovery_2.jpg"
+      ],
+      "thumbnail": "https://example.com/car_images/landrover_discovery_1.jpg"
+    },
+    {
+      "brand": "Renault",
+      "class": "A-Class",
+      "modelName": "Renault Clio",
+      "modelCode": "RENC101",
+      "description": "<p>Renault Clio is a compact hatchback, perfect for city driving and economy.</p>",
+      "features": "<ul><li>Fuel efficient</li><li>Compact design</li><li>Advanced infotainment</li></ul>",
+      "price": 18000.00,
+      "dateOfManufacture": "2023-05-10T00:00:00Z",
+      "active": false,
+      "sortOrder": 4,
+      "modelImages": [
+        "https://example.com/car_images/renault_clio_1.jpg",
+        "https://example.com/car_images/renault_clio_2.jpg"
+      ],
+      "thumbnail": "https://example.com/car_images/renault_clio_1.jpg"
+    }
+  ]
+}

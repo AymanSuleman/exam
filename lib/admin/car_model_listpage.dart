@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application/admin/add_car_model.dart';
+import 'package:flutter_application/theme/app_theme.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class CarModelListPage extends StatelessWidget {
@@ -8,7 +9,10 @@ class CarModelListPage extends StatelessWidget {
 
   Future<void> _deleteCarModel(String docId) async {
     try {
-      await FirebaseFirestore.instance.collection('car_models').doc(docId).delete();
+      await FirebaseFirestore.instance
+          .collection('car_models')
+          .doc(docId)
+          .delete();
       Fluttertoast.showToast(msg: "Deleted successfully");
     } catch (e) {
       Fluttertoast.showToast(msg: "Failed to delete: $e");
@@ -18,9 +22,16 @@ class CarModelListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Car Models")),
+      appBar: AppBar(
+          title: Text(
+        "Car Models",
+        style: TextStyle(color: AppTheme.textPrimary),
+      )),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('car_models').orderBy('sortOrder').snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('car_models')
+            .orderBy('sortOrder')
+            .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
@@ -41,7 +52,8 @@ class CarModelListPage extends StatelessWidget {
 
               return ListTile(
                 title: Text(data['modelName'] ?? ''),
-                subtitle: Text("Brand: ${data['brand']}, Price: ₹${data['price']}"),
+                subtitle:
+                    Text("Brand: ${data['brand']}, Price: ₹${data['price']}"),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -49,7 +61,8 @@ class CarModelListPage extends StatelessWidget {
                       icon: Icon(Icons.edit),
                       onPressed: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => AddCarModelPage(docId: docId)),
+                        MaterialPageRoute(
+                            builder: (_) => AddCarModelPage(docId: docId)),
                       ),
                     ),
                     IconButton(

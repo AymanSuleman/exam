@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application/theme/app_theme.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -155,10 +156,13 @@ class _CarModelDetailPageState extends State<CarModelDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Car Model Details'),
+        backgroundColor: AppTheme.primaryColor,
+        title: const Text('Car Model Details',
+        style: TextStyle(color: AppTheme.textPrimary),),
         actions: [
           IconButton(
-            icon: const Icon(Icons.delete),
+            icon: const Icon(Icons.delete,
+            color: AppTheme.textPrimary,),
             onPressed: _isLoading ? null : _deleteCarModel,
           )
         ],
@@ -204,9 +208,13 @@ class _CarModelDetailPageState extends State<CarModelDetailPage> {
                       ),
                     const SizedBox(height: 12),
                     ElevatedButton.icon(
-                      icon: const Icon(Icons.add_a_photo),
-                      label: const Text('Add Images'),
+                       style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor),
+                      icon: const Icon(Icons.add_a_photo,
+                      color: AppTheme.textPrimary,),
+                      label: const Text('Add Images',
+                      style: TextStyle(color: AppTheme.textPrimary)),
                       onPressed: _pickImages,
+                      
                     ),
                     const SizedBox(height: 20),
                     TextFormField(
@@ -245,8 +253,10 @@ class _CarModelDetailPageState extends State<CarModelDetailPage> {
                     ),
                     const SizedBox(height: 24),
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor),
                       onPressed: _isLoading ? null : _saveChanges,
-                      child: const Text('Save Changes'),
+                      child: const Text('Save Changes',
+                      style: TextStyle(fontSize: 16,color: AppTheme.textPrimary,)),
                     )
                   ],
                 ),
