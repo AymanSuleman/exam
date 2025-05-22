@@ -52,7 +52,7 @@ class AppTheme {
         ),
         hintStyle: TextStyle(color: Colors.grey.shade600),
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: Colors.white,
         elevation: 4,
         shape: RoundedRectangleBorder(
