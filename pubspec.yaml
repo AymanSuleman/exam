@@ -30,7 +30,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_quill: ^7.0.0  # latest as of now
   flutter_hooks: ^0.20.5 # optional for state handling
   tuple: ^2.0.1
 
@@ -49,6 +48,7 @@ dependencies:
   pdf: ^3.11.3
   printing: ^5.14.2
   google_fonts: ^6.2.1
+  flutter_quill: ^11.4.1
 
 dev_dependencies:
   flutter_test:
