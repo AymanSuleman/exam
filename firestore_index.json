@@ -1,0 +1,21 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "carmodel",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "active", "order": "ASCENDING" },
+        { "fieldPath": "dateOfManufacturing", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "carmodel",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "active", "order": "ASCENDING" },
+        { "fieldPath": "modelName", "order": "ASCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
